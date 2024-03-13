@@ -1,0 +1,8 @@
+frontend/node_modules
+frontend/.cache
+frontend/build
+frontend/public/build
+.env
+
+__pycache__
+*.pyc
