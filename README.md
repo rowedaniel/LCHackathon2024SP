@@ -38,6 +38,16 @@ show databases;
 should include ``mind''. 
 
 
+# Running
+## Backend
+```sh
+uvicorn mind_api.main:app --reload
+```
+## Frontend
+```sh
+npm run dev
+```
+
 
 # Notes for Daniel:
 to export requirements.txt:
