@@ -2,7 +2,7 @@
 
 requires:
 - docker
-- python3.8
+- python 3.9 (Though I used 3.11, so be warned)
 - npm
 - mysql
 
