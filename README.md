@@ -37,6 +37,11 @@ show databases;
 ```
 should include ``mind''. 
 
+To add tables to database:
+```sh
+alembic upgrade head
+```
+
 
 # Running
 ## Backend
