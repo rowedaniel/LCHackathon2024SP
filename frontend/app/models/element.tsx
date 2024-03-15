@@ -34,7 +34,7 @@ export function NewElement({parent_left, parent_right}: {parent_left: number, pa
   if(elems === null) {
     getAllElements(parent_left, parent_right, setElems)
     return (
-      <div></div>
+      <div style={elementStyle}></div>
     );
   }
   return (
