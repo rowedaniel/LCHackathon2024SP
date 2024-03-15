@@ -2,7 +2,7 @@
 
 requires:
 - docker
-- python3.8
+- python 3.9 (Though I used 3.11, so be warned)
 - npm
 - mysql
 
@@ -36,6 +36,11 @@ This should take you into a mysql shell.
 show databases;
 ```
 should include ``mind''. 
+
+To add tables to database:
+```sh
+alembic upgrade head
+```
 
 
 # Running
