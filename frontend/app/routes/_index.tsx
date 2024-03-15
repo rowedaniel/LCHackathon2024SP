@@ -1,6 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-
-import { Builder } from "~/models/builder";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,9 +9,18 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const mainStyle = {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row" as const,
+    alignItems: "space-between",
+    justifyContent: "space-between"
+  }
   return (
-    <div>
-      <Builder />
+    <div style={mainStyle}>
+      <Link to="/newelems">New Thoughts </Link>
+      <Link to="/build">Contemplate </Link>
     </div>
   );
 }
