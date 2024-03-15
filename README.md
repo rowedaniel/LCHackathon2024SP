@@ -15,6 +15,7 @@ pip install -r requirements.txt
 ```
 
 ### docker
+From within ``backend'' directory:
 Docker image:
 (you may have to start the docker daemon first)
 To start image:
@@ -41,6 +42,13 @@ To add tables to database:
 ```sh
 alembic upgrade head
 ```
+
+### react
+From within ``frontend'' directory:
+```sh
+npm install
+```
+
 
 
 # Running

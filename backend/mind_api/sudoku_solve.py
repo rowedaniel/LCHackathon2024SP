@@ -42,6 +42,23 @@ def reduce_table(table: list[list[list[int]]], identity: int) -> bool:
     # make sure group rules hold
     for a in range(n):
         for b in range(n):
+            # uniqueness of inverses
+            if len(table[a][b]) == 1 or len(table[b][a]) == 1:
+                if table[a][b] == [identity] or table[b][a] == [identity]:
+                    entry_1 = table[a][b]
+                    entry_2 = table[b][a]
+                    intersection = list(set(entry_1).intersection(set(entry_2)))
+
+                    if len(intersection) < len(entry_1) or len(intersection) < len(
+                        entry_2
+                    ):
+                        changed = True
+
+                    table[a][b] = intersection
+                    table[b][a] = intersection
+
+
+
             for c in range(n):
 
                 # associativity

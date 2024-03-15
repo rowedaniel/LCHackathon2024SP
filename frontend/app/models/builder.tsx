@@ -1,4 +1,4 @@
-import { useState, FormEventHandler, SyntheticEvent } from "react"
+import { useState, useEffect, SyntheticEvent } from "react"
 
 
 interface element {
@@ -21,41 +21,78 @@ const builderStyle = {
 export function Builder() {
   const [left, setLeft] = useState<element>()
   const [right, setRight] = useState<element>()
+  const [child, setChild] = useState<element|null>()
 
-  // TODO: currently, this re-renders the elements several times before settling in.
-  // Consider using fancier react stuff (effects maybe?) to stop this
-  if(!left) {
+  useEffect(() => {
     getRandomElement(setLeft)
-    return (
-      <div></div>
-    );
-  }
-  if(!right) {
     getRandomElement(setRight)
-    return (
-      <div></div>
-    );
+  }, [setLeft, setRight])
+  useEffect(() => {
+    if(!left || !right) return
+    getProduct(left.id, right.id, setChild)
+  }, [left, right, setChild])
+
+  if(!left || !right) {
+      return
   }
+
 
   function handleNewElement(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
-    console.log(formData)
-    console.log([...formData.entries()]);
+    const formProps = Object.fromEntries(formData);
+    const child = formProps.child
+    if(!left || !right) {
+        return
+    }
+
+    fetch(backend_url + "operation/create", {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      //make sure to serialize your JSON body
+      body: JSON.stringify({
+        parent_left: left.id,
+        parent_right: right.id,
+        child: child
+      })
+    })
+    .then( (response) => { 
+       console.log(response)
+        getRandomElement(setRight)
+    });
+
   }
 
-  return (
-    <form method="post" onSubmit={handleNewElement}>
-      <div style={builderStyle}>
-        <Element {...left} />
-        <Sym character={"+"} />
-        <Element {...right} />
-        <Sym character={"="} />
-        <NewElement parent_left={left.id} parent_right={right.id} />
-      </div>
-    </form>
-  )
+  if(!child) {
+      return (
+        <form method="post" onSubmit={handleNewElement}>
+          <div style={builderStyle}>
+            <Element {...left} />
+            <Sym character={"+"} />
+            <Element {...right} />
+            <Sym character={"="} />
+            <NewElement parent_left={left.id} parent_right={right.id} />
+          </div>
+        </form>
+      )
+  } else if(child) {
+      return (
+        <form method="post" onSubmit={handleNewElement}>
+          <div style={builderStyle}>
+            <Element {...left} />
+            <Sym character={"+"} />
+            <Element {...right} />
+            <Sym character={"="} />
+            <Element {...child} />
+          </div>
+        </form>
+      )
+  }
 }
 
 const elementStyle = {
@@ -94,8 +131,6 @@ function NewElement({parent_left, parent_right}: {parent_left: number, parent_ri
   return (
     <div style={elementStyle}>
       <label>
-        <select name={"parent_left"} defaultValue={parent_left} style={{display: "none"}}></select>
-        <select name={"parent_right"} defaultValue={parent_right} style={{display: "none"}}></select>
         <select name={"child"} style={newElementStyle}>
           {elems.map((elem, i) => (
             <option key={i} value={elem.id.toString()}> {elem.name} </option>
@@ -135,11 +170,12 @@ function getRandomElement(setElem: (elem: element) => void) {
   }).then((response) => {
     if(response.ok) {
       return response.json()
-    } else {
-      return {name: "not found"}
     }
+    throw new Error("bad response")
   }).then((data) => {
     setElem(data)
+  }).catch((error) => {
+    console.log(error)
   })
 }
 
@@ -152,30 +188,36 @@ function getElement(id: number, setElem: (elem: element) => void) {
   }).then((response) => {
     if(response.ok) {
       return response.json()
-    } else {
-      return {name: "not found"}
     }
+    throw new Error("bad response")
   }).then((data) => {
     setElem(data)
+  }).catch((error) => {
+    console.log(error)
   })
 }
 
 
 
-function getProduct(parent_left: number, parent_right: number, setElem: (elem: element) => void) {
+function getProduct(parent_left: number, parent_right: number, setElem: (elem: element|null) => void) {
   fetch(backend_url + "operation/fromparents"+ `?parent_left=${parent_left}&parent_right=${parent_right}`, {
     method: "GET",
     headers: {
         "Content-Type": "application/json"
     }
   }).then((response) => {
+    console.log(response)
     if(response.ok) {
       return response.json()
-    } else {
-      return []
     }
+    throw new Error("bad response")
   }).then((data) => {
-    getElement(data.child, setElem)
+    if (data["child"]) {
+      getElement(data.child, setElem)
+    }
+  }).catch((error) => {
+    console.log("setting to null")
+    setElem(null)
   })
 }
 
@@ -188,11 +230,12 @@ function getAllElements(parent_left: number, parent_right: number, setElems: (el
   }).then((response) => {
     if(response.ok) {
       return response.json()
-    } else {
-      return []
     }
+    throw new Error("bad response")
   }).then((data) => {
     setElems(data)
+  }).catch((error) => {
+    console.log(error)
   })
 }
 

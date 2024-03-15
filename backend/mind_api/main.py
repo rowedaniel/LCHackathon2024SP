@@ -169,9 +169,19 @@ async def create_op(
     selected_table = tables[selected_i]
     for row, left in enumerate(elements):
         for col, right in enumerate(elements):
-            if len(selected_table[row][col]) != 1:
+            print(row, col, table[row][col])
+            if len(selected_table[row][col]) != 1 or len(table[row][col]) == 1:
                 continue
             create_op = OperationCreate( parent_left=left.id, parent_right=right.id, child=operation.child)
+
+            # make sure op doesn't exist
+            existing_op = get_operation_by_parents(
+                db, left.id, right.id
+            )
+            if existing_op is not None:
+                continue
+
+            # doesn't exist, so create it
             op = create_operation(
                 db,
                 create_op
