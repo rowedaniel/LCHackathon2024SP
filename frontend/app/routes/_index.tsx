@@ -1,21 +1,18 @@
 import type { MetaFunction } from "@remix-run/node";
-import React, { useState } from "react";
+
+import { Builder } from "~/models/builder";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Read my Mind" },
+    { name: "description", content: "Lewis & Clark 2024 spring hackathon" },
   ];
 };
 
 export default function Index() {
-  const [firstName, setFirstName] = useState('');
-  
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-	  <h>progress:</h>
-      <input value = {firstName} onChange={e=> setFirstName(e.target.value)} />
-	  <p>{firstName}</p>
+    <div>
+      <Builder />
     </div>
   );
 }

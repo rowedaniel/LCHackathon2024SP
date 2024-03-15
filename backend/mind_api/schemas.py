@@ -3,6 +3,7 @@ from pydantic import BaseModel, constr
 
 class ElementBase(BaseModel):
     name: constr(max_length=200)
+    order: int|None = None
 
 
 class ElementCreate(ElementBase):

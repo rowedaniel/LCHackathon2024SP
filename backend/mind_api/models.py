@@ -7,6 +7,7 @@ class Element(Base):
     __tablename__ = "elements"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(length=200))
+    order = Column(Integer)
 
 
 class Operation(Base):
