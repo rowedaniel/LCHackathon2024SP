@@ -33,7 +33,17 @@ export function Builder() {
   }, [left, right, setChild])
 
   if(!left || !right) {
-      return
+      return (
+	  <form method="post" onSubmit={handleNewElement}>
+          <div style={builderStyle}>
+            <Element name={""} order={0} />
+            <Sym character={"+"} />
+            <Element name={""} order={0} />
+            <Sym character={"="} />
+            <Element name={""} order={0} />
+          </div>
+        </form>
+	)
   }
 
 
@@ -94,7 +104,6 @@ export function Builder() {
       )
   }
 }
-
 const elementStyle = {
   borderRadius: "25px",
   border: "2px solid black",
@@ -108,6 +117,7 @@ const elementStyle = {
   color: "white",
   fontSize: "20px",
 }
+
 function Element({name}: element) {
   return (
     <div style={elementStyle}>
@@ -125,7 +135,7 @@ function NewElement({parent_left, parent_right}: {parent_left: number, parent_ri
   if(elems === null) {
     getAllElements(parent_left, parent_right, setElems)
     return (
-      <div></div>
+      <div style={elementStyle}></div>
     );
   }
   return (
