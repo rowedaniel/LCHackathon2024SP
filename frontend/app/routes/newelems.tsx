@@ -1,5 +1,5 @@
 import {  SyntheticEvent } from "react"
-
+import { Link } from "@remix-run/react";
 import { CreateElement } from "~/models/element"
 import { backend_url } from "~/models/utils"
 
@@ -28,9 +28,21 @@ export default function NewElems() {
     });
 
   }
+  const mainStyle = {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row" as const,
+    alignItems: "space-between",
+    justifyContent: "space-between"
+  }
   return (
     <form method="post" onSubmit={handleCreateElement}>
-      <div>
+      <div style={mainStyle}>
+        <Link to="/">Home </Link>
+        <Link to="/build">Contemplate </Link>
+      </div>
+	  <div>
         <CreateElement />
       </div>
     </form>
