@@ -23,14 +23,16 @@ export function Builder() {
   const [right, setRight] = useState<element>()
   const [child, setChild] = useState<element|null>()
 
+
   useEffect(() => {
-    getRandomElement(setLeft)
-    getRandomElement(setRight)
-  }, [setLeft, setRight])
-  useEffect(() => {
-    if(!left || !right) return
-    getProduct(left.id, right.id, setChild)
-  }, [left, right, setChild])
+    getRandomElement((newLeft) => {
+      getRandomElement((newRight) => {
+        setLeft(newLeft)
+        setRight(newRight)
+        getProduct(newLeft.id, newRight.id, setChild)
+      })
+    })
+  }, [setLeft, setRight, setChild])
 
   if(!left || !right) {
       return (
@@ -71,9 +73,12 @@ export function Builder() {
         child: child
       })
     })
-    .then( (response) => { 
-       console.log(response)
-        getRandomElement(setRight)
+    .then((response) => { 
+        console.log(response.json())
+        getRandomElement((newRight) => {
+          getProduct(left.id, newRight.id, setChild)
+          setRight(newRight)
+        })
     });
 
   }
@@ -216,10 +221,10 @@ function getProduct(parent_left: number, parent_right: number, setElem: (elem: e
         "Content-Type": "application/json"
     }
   }).then((response) => {
-    console.log(response)
     if(response.ok) {
       return response.json()
     }
+    console.log("error")
     throw new Error("bad response")
   }).then((data) => {
     if (data["child"]) {
@@ -227,6 +232,7 @@ function getProduct(parent_left: number, parent_right: number, setElem: (elem: e
     }
   }).catch((error) => {
     console.log("setting to null")
+    console.log(error)
     setElem(null)
   })
 }

@@ -55,7 +55,13 @@ async def get_possible_elems(
     # refine by sudoku
     elements = get_all_elements(db)
     table = construct_table(db, elements)
-    options, _ = verify_table_options(db, table, elements, parent_left, parent_right)
+    options, tables = verify_table_options(db, table, elements, parent_left, parent_right)
+
+    for option,selected_table in zip(options, tables):
+        print("choosing option:", option)
+        for row in selected_table:
+            print(row)
+
     return [elements[o] for o in options]
 
 
@@ -167,6 +173,8 @@ async def create_op(
     # now create all the other necessary ops for this to work
     selected_i = id_options.index(operation.child)
     selected_table = tables[selected_i]
+    for row in selected_table:
+        print(row)
     for row, left in enumerate(elements):
         for col, right in enumerate(elements):
             print(row, col, table[row][col])
